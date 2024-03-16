@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_04q7pg8" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.19.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.20.0">
+  <bpmn:process id="Book-tickets" name="Book Tickets for Show" isExecutable="true" camunda:historyTimeToLive="180">
+    <bpmn:startEvent id="StartEvent_1" name="Start">
+      <bpmn:outgoing>Flow_00qjqtt</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_00qjqtt" sourceRef="StartEvent_1" targetRef="Activity_15v14h1" />
+    <bpmn:serviceTask id="Activity_15v14h1" name="Check Show" camunda:type="external" camunda:topic="check-show">
+      <bpmn:incoming>Flow_00qjqtt</bpmn:incoming>
+      <bpmn:outgoing>Flow_0vjpxna</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_18yjx72">
+      <bpmn:incoming>Flow_0vjpxna</bpmn:incoming>
+      <bpmn:outgoing>Flow_0gkobaj</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0orxacy</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0vjpxna" sourceRef="Activity_15v14h1" targetRef="Gateway_18yjx72" />
+    <bpmn:sequenceFlow id="Flow_0gkobaj" name="Available" sourceRef="Gateway_18yjx72" targetRef="Activity_0urpnwg">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${showAvailable}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="Activity_0urpnwg" name="Book Tickets" camunda:type="external" camunda:topic="book-tickets">
+      <bpmn:incoming>Flow_0gkobaj</bpmn:incoming>
+      <bpmn:outgoing>Flow_173d8ok</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0orxacy" name="Not Available" sourceRef="Gateway_18yjx72" targetRef="Activity_1m13fl7">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!showAvailable}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="Activity_1m13fl7" name="Notify No Show" camunda:type="external" camunda:topic="notify-no-show">
+      <bpmn:incoming>Flow_0orxacy</bpmn:incoming>
+      <bpmn:outgoing>Flow_1noiyro</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_173d8ok" sourceRef="Activity_0urpnwg" targetRef="Event_1ibpgyc" />
+    <bpmn:sequenceFlow id="Flow_1noiyro" sourceRef="Activity_1m13fl7" targetRef="Event_1hoilbc" />
+    <bpmn:endEvent id="Event_1hoilbc" name="Quit">
+      <bpmn:incoming>Flow_1noiyro</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="Event_1ibpgyc" name="Quit">
+      <bpmn:incoming>Flow_173d8ok</bpmn:incoming>
+    </bpmn:endEvent>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Book-tickets">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="185" y="142" width="25" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1dv7lml_di" bpmnElement="Activity_15v14h1">
+        <dc:Bounds x="270" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_18yjx72_di" bpmnElement="Gateway_18yjx72" isMarkerVisible="true">
+        <dc:Bounds x="425" y="92" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_09w1adu_di" bpmnElement="Activity_0urpnwg">
+        <dc:Bounds x="620" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0urgrlu_di" bpmnElement="Activity_1m13fl7">
+        <dc:Bounds x="620" y="260" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0t13dt7_di" bpmnElement="Event_1hoilbc">
+        <dc:Bounds x="872" y="282" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="880" y="325" width="22" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1mulej5_di" bpmnElement="Event_1ibpgyc">
+        <dc:Bounds x="872" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="880" y="142" width="22" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_00qjqtt_di" bpmnElement="Flow_00qjqtt">
+        <di:waypoint x="215" y="117" />
+        <di:waypoint x="270" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0vjpxna_di" bpmnElement="Flow_0vjpxna">
+        <di:waypoint x="370" y="117" />
+        <di:waypoint x="425" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0gkobaj_di" bpmnElement="Flow_0gkobaj">
+        <di:waypoint x="475" y="117" />
+        <di:waypoint x="620" y="117" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="526" y="99" width="44" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0orxacy_di" bpmnElement="Flow_0orxacy">
+        <di:waypoint x="450" y="142" />
+        <di:waypoint x="450" y="300" />
+        <di:waypoint x="620" y="300" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="507" y="273" width="65" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_173d8ok_di" bpmnElement="Flow_173d8ok">
+        <di:waypoint x="720" y="117" />
+        <di:waypoint x="872" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1noiyro_di" bpmnElement="Flow_1noiyro">
+        <di:waypoint x="720" y="300" />
+        <di:waypoint x="872" y="300" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
